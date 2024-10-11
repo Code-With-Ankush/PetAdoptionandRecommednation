@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Available Pets for Adoption
+{% endblock %}
+
+{% block sidebar %}
+{% include 'user/sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+<section class="section py-5">
+    <div class="container">
+        <!-- Search and Title Section -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title fw-bold">Available Pets for Adoption</h2>
+            <form method="GET" action="{% url 'home.pet_listing' %}" class="d-flex search-form">
+                <input type="text" name="q" class="form-control me-2 search-input" placeholder="Search by name or breed..." value="{{ request.GET.q }}">
+                <button type="submit" class="btn btn-primary search-btn">Search</button>
+            </form>
+        </div>
+
+        <!-- Pet Listings Section -->
+        <div class="row">
+            {% for pet in pets %}
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                <div class="card pet-card shadow-sm border-0 h-100">
+                    <div class="card-body p-4 text-center">
+                        <div class="pet-image mb-3">
+                            <img src="{{ pet.image.url }}" alt="{{ pet.pet_name }}" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                        </div>
+                        <h5 class="pet-name mb-2 fw-bold">{{ pet.pet_name }}</h5>
+                        <p class="pet-breed mb-1 text-muted">{{ pet.pet_breed }}</p>
+                        <p class="pet-age mb-2 text-muted">{{ pet.pet_age }} years old</p>
+                        <p class="pet-location text-muted">Location: <strong>{{ pet.location_city }}</strong></p>
+                        <p class="pet-status">
+                            {% if pet.pet_status == 'Available' %}
+                            <span class="badge bg-success">Available</span>
+                            {% else %}
+                            <span class="badge bg-danger">Adopted</span>
+                            {% endif %}
+                        </p>
+                        <div class="d-flex justify-content-center">
+                            {% if pet.pet_status == 'Available' %}
+                            <a href="{% url 'home.adopt_pet' pet.id %}" class="btn btn-outline-success me-2">Adopt Me</a>
+                            {% else %}
+                            <span class="btn btn-outline-secondary me-2 disabled">Adopted</span>
+                            {% endif %}
+                            <a href="{% url 'pet_detail' pet.id %}" class="btn btn-outline-info">More Info</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted">No pets available for adoption at the moment. Please check back later!</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-center mt-4">
+            <nav>
+                <ul class="pagination">
+                    {% if pets.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ pets.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in pets.paginator.page_range %}
+                        <li class="page-item {% if pets.number == num %} active {% endif %}">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+
+                    {% if pets.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ pets.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+
+<!-- Recommendations Section -->
+<section class="section py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title fw-bold mb-4">Recommended Pets for You</h2>
+        <div class="row">
+            {% for recommended_pet in recommendations %}
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                <div class="card pet-card shadow-sm border-0 h-100">
+                    <div class="card-body p-4 text-center">
+                        <div class="pet-image mb-3">
+                            <img src="{{ recommended_pet.image.url }}" alt="{{ recommended_pet.pet_name }}" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                        </div>
+                        <h5 class="pet-name mb-2 fw-bold">{{ recommended_pet.pet_name }}</h5>
+                        <p class="pet-breed mb-1 text-muted">{{ recommended_pet.pet_breed }}</p>
+                        <p class="pet-age mb-2 text-muted">{{ recommended_pet.pet_age }} years old</p>
+                        <p class="pet-location text-muted">Location: <strong>{{ recommended_pet.location_city }}</strong></p>
+                        <p class="pet-status">
+                            {% if recommended_pet.pet_status == 'Available' %}
+                            <span class="badge bg-success">Available</span>
+                            {% else %}
+                            <span class="badge bg-danger">Adopted</span>
+                            {% endif %}
+                        </p>
+                        <div class="d-flex justify-content-center">
+                            {% if recommended_pet.pet_status == 'Available' %}
+                            <a href="{% url 'home.adopt_pet' recommended_pet.id %}" class="btn btn-outline-success me-2">Adopt Me</a>
+                            {% else %}
+                            <span class="btn btn-outline-secondary me-2 disabled">Adopted</span>
+                            {% endif %}
+                            <a href="{% url 'pet_detail' recommended_pet.id %}" class="btn btn-outline-info">More Info</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted">No recommendations available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .search-form {
+        width: 100%;
+    }
+    .search-input {
+        max-width: 300px;
+        border-radius: 25px;
+        padding: 10px 20px;
+    }
+    .search-btn {
+        border-radius: 25px;
+        padding: 10px 20px;
+    }
+
+    .pet-card {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .pet-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .pagination {
+        justify-content: center;
+    }
+
+    .pagination .active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .page-link {
+        color: #007bff;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        color: #333;
+    }
+
+    .pet-image {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pet-image img {
+        border-radius: 50%;
+        border: 4px solid #f8f9fa;
+    }
+
+    .btn-outline-info {
+        color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-outline-info:hover {
+        background-color: #007bff;
+        color: white;
+    }
+</style>
+{% endblock %}

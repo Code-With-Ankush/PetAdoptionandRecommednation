@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}
+User Dashboard - Pet List
+{% endblock %}
+
+{% block sidebar %}
+{% include 'user/sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Pet List</h4>
+                <div class="card-header-form">
+                    <form>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search">
+                            <div class="input-group-btn">
+                                <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                <a href="{% url 'user.static_dogspot_marker_map' %}" class="btn btn-primary" style="border-radius: 50px !important;">Add</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Place Name</th>
+                                <th>No of Pets</th>
+                                <th>Pets Behaviour</th>
+                                <th>Images</th>
+                                <th>Pet Info</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in map_data %}
+                            <tr>
+                                <td>{{ data.place_name }}</td>
+                                <td>{{ data.no_of_dogs }}</td>
+                                <td>{{ data.behaviour }}</td>
+
+                                <!-- Display images of pets -->
+                                <td>
+                                    {% for pic in data.dog_pics.all %}
+                                    <img alt="image" src="{{ pic.image.url }}" class="img-thumbnail" style="width: 50px; height: 50px; border-radius: 50%;" data-toggle="tooltip" title="{{ pic.pet_name }}">
+                                    {% endfor %}
+                                </td>
+
+                                <!-- Display pet information for each dog pic -->
+                                <td>
+                                    {% for pic in data.dog_pics.all %}
+                                    <div>
+                                        <strong>{{ pic.pet_name }}</strong><br>
+                                        Breed: {{ pic.pet_breed }}<br>
+                                        Age: {{ pic.pet_age }} years<br>
+                                        Size: {{ pic.pet_size }}<br>
+                                        Gender: {{ pic.pet_gender }}<br>
+                                        Color: {{ pic.pet_color }}<br>
+                                        Health: {{ pic.health_status }}<br>
+                                        Vaccinated: {{ pic.vaccinated|yesno:"Yes,No" }}<br>
+                                        Spayed/Neutered: {{ pic.spayed_neutered|yesno:"Yes,No" }}
+                                    </div>
+                                    {% endfor %}
+                                </td>
+
+                                <!-- Display status of the pets -->
+                                <td>
+                                    {% for pic in data.dog_pics.all %}
+                                        <span class="badge badge-{{ pic.status|lower }}">
+                                            {{ pic.get_status_display }}
+                                        </span>
+                                    {% endfor %}
+                                </td>
+
+                                <!-- Action buttons for updating -->
+                                <td>
+                                    <form action="{% url 'user.dogspot_update' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{ data.id }}" name="id">
+                                        <button class="btn btn-primary">Update</button>
+                                    </form>
+
+                                    <!-- Delete button -->
+                                    <form action="{% url 'user.dogspot_delete' %}" method="post" style="margin-top: 10px;">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{ data.id }}" name="delete_id">
+                                        <button class="btn btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">No Pets Found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    {% for message in messages %}
+        {% if message.tags == 'delete_msg success' %}
+        iziToast.success({
+            position: "topRight",
+            timeout: 5000, 
+            icon: 'ico-success', 
+            title: "Dogspot has been successfully removed.",
+        });
+        {% endif %}
+    {% endfor %}
+</script>
+{% endblock %}

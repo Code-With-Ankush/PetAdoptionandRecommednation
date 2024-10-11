@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ pet.pet_name }} Details
+{% endblock %}
+
+{% block sidebar %}
+{% include 'user/sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+<section class="section py-5">
+    <div class="container">
+        <!-- Pet Details Heading -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title fw-bold">Meet {{ pet.pet_name }}</h2>
+            <a href="{% url 'home.pet_listing' %}" class="btn btn-outline-primary">Back to Listings</a>
+        </div>
+        
+        <div class="row">
+            <!-- Pet Image -->
+            <div class="col-md-6 text-center">
+                <div class="pet-image">
+                    <img src="{{ pet.image.url }}" alt="{{ pet.pet_name }}" class="img-fluid rounded-circle" style="width: 300px; height: 300px; object-fit: cover;">
+                </div>
+            </div>
+            <!-- Pet Information -->
+            <div class="col-md-6">
+                <div class="pet-info">
+                    <h2 class="fw-bold">{{ pet.pet_name }}</h2>
+                    <p class="text-muted">{{ pet.pet_breed }}</p>
+                    <hr>
+                    <ul class="list-unstyled">
+                        <li><strong>Breed:</strong> {{ pet.pet_breed }}</li>
+                        <li><strong>Age:</strong> {{ pet.pet_age }} years old</li>
+                        <li><strong>Gender:</strong> {{ pet.pet_gender }}</li>
+                        <li><strong>Size:</strong> {{ pet.pet_size }}</li>
+                        <li><strong>Color:</strong> {{ pet.pet_color }}</li>
+                        <li><strong>Health Status:</strong> {{ pet.health_status }}</li>
+                        <li><strong>Location:</strong> {{ pet.location_city }}</li>
+                        <li><strong>Date Added:</strong> {{ pet.date_added|date:"M d, Y" }}</li>
+                    </ul>
+                    <p>
+                        {% if pet.pet_status == 'Available' %}
+                        <span class="badge bg-success">Available</span>
+                        {% else %}
+                        <span class="badge bg-danger">Adopted</span>
+                        {% endif %}
+                    </p>
+                    <!-- Adoption Button -->
+                    {% if pet.pet_status == 'Available' %}
+                    <a href="{% url 'home.adopt_pet' pet.id %}" class="btn btn-success btn-lg mt-3">Adopt {{ pet.pet_name }}</a>
+                    {% else %}
+                    <span class="btn btn-outline-secondary btn-lg mt-3 disabled">Already Adopted</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recommendations Section -->
+<section class="section py-5 bg-light">
+    <div class="container">
+        <h3 class="section-title fw-bold">Similar Pets You May Like</h3>
+        <div class="row">
+            {% for recommended_pet in recommendations %}
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                <div class="card pet-card shadow-sm border-0 h-100">
+                    <div class="card-body p-4 text-center">
+                        <div class="pet-image mb-3">
+                            <img src="{{ recommended_pet.image.url }}" alt="{{ recommended_pet.pet_name }}" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                        </div>
+                        <h5 class="pet-name mb-2 fw-bold">{{ recommended_pet.pet_name }}</h5>
+                        <p class="pet-breed mb-1 text-muted">{{ recommended_pet.pet_breed }}</p>
+                        <p class="pet-age mb-2 text-muted">{{ recommended_pet.pet_age }} years old</p>
+                        <p class="pet-location text-muted">Location: <strong>{{ recommended_pet.location_city }}</strong></p>
+                        <p class="pet-status">
+                            {% if recommended_pet.pet_status == 'Available' %}
+                            <span class="badge bg-success">Available</span>
+                            {% else %}
+                            <span class="badge bg-danger">Adopted</span>
+                            {% endif %}
+                        </p>
+                        <div class="d-flex justify-content-center">
+                            {% if recommended_pet.pet_status == 'Available' %}
+                            <a href="{% url 'home.adopt_pet' recommended_pet.id %}" class="btn btn-outline-success me-2">Adopt Me</a>
+                            {% else %}
+                            <span class="btn btn-outline-secondary me-2 disabled">Adopted</span>
+                            {% endif %}
+                            <a href="{% url 'pet_detail' recommended_pet.id %}" class="btn btn-outline-info">More Info</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted">No similar pets available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pet-image img {
+        border-radius: 50%;
+        border: 5px solid #f8f9fa;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        color: #333;
+    }
+
+    .pet-info ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .pet-info ul li {
+        margin-bottom: 10px;
+    }
+
+    .pet-info {
+        padding: 10px 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+
+    .btn-lg {
+        font-size: 1.25rem;
+        padding: 10px 20px;
+    }
+
+    .recommended-section {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+    }
+
+    .pet-card {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .pet-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .section {
+        padding-top: 30px;
+        padding-bottom: 30px;
+    }
+
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+</style>
+{% endblock %}

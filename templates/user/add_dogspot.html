@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Add Dogspot
+{% endblock %}
+
+{% block sidebar %}
+{% include 'user/sidebar.html' %}
+{% endblock %}
+
+{% block styles %}
+<!-- FilePond stylesheet -->
+<link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
+<link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet"/>
+
+<style>
+    .filepond--credits{
+        display:none;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<section class="section">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-6 col-lg-6">
+            <div class="card">
+
+                <form id="form">
+                    {% csrf_token %}
+                    <div class="card-header">
+                        <h4>Add Dogspot</h4>
+                    </div>
+                    <div class="card-body">
+
+                        <!-- Dogspot Information -->
+                        <div class="form-group">
+                            <label>Place Name</label>
+                            <input type="text" id="place_name" name="place_name" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="description" name="description" class="form-control" required=""></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Numbers Of Dogs</label>
+                            <input type="number" id="no_of_dogs" name="no_of_dogs" class="form-control" min="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Select Dog Behaviour</label>
+                            <input type="hidden" id="behaviour_data_text_box" name='behaviour' class="form-control">
+                            <div class="selectgroup selectgroup-pills">
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Aggressive" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Aggressive</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Biting" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Biting</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Social" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Social</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Friendly" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Friendly</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Barking" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Barking</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Chasing" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Chasing</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Territorial" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Territorial</span>
+                                </label>
+                                <label class="selectgroup-item">
+                                    <input type="checkbox" name="value" value="Illness" class="selectgroup-input behaviour_checkbox">
+                                    <span class="selectgroup-button">Illness</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Select Distance</label>
+                            <select name="km" id="km" class="form-control" required>
+                                <option value="" selected disabled>Select</option>
+                                <option value="250">500 meters</option>
+                                <option value="500">1 kilometer</option>
+                                <option value="1000">2 kilometers</option>
+                                <option value="1500">3 kilometers</option>
+                                <option value="2000">4 kilometers</option>
+                                <option value="2500">5 kilometers</option>
+                            </select>
+                        </div>
+
+                        <!-- Pet Information -->
+                        <div class="form-group">
+                            <label>Pet Name</label>
+                            <input type="text" id="pet_name" name="pet_name" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pet Breed</label>
+                            <input type="text" id="pet_breed" name="pet_breed" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pet Age</label>
+                            <input type="number" id="pet_age" name="pet_age" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pet Gender</label>
+                            <select id="pet_gender" name="pet_gender" class="form-control" required>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pet Size</label>
+                            <select id="pet_size" name="pet_size" class="form-control" required>
+                                <option value="Small">Small</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Large">Large</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pet Color</label>
+                            <input type="text" id="pet_color" name="pet_color" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Health Status</label>
+                            <input type="text" id="health_status" name="health_status" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Vaccinated</label>
+                            <select id="vaccinated" name="vaccinated" class="form-control" required>
+                                <option value="True">Yes</option>
+                                <option value="False">No</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Spayed/Neutered</label>
+                            <select id="spayed_neutered" name="spayed_neutered" class="form-control" required>
+                                <option value="True">Yes</option>
+                                <option value="False">No</option>
+                            </select>
+                        </div>
+
+                        <!-- FilePond Upload -->
+                        <div class="form-group">
+                            <input name="images" id="images" type="file" class="filepond" accept="image/*" multiple data-max-file-size="1MB" data-max-files="4" required="">
+                        </div>
+
+                    </div>
+                    <div class="card-footer text-right">
+                        <button class="btn btn-primary" id="add_Btn">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.14/dist/sweetalert2.all.min.js"></script>
+<script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+<script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+<script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+
+<script>
+    let files = [];
+    
+    // Handle behavior checkboxes
+    $('.behaviour_checkbox').click(function(){
+        var behaviour_data = "";
+        $('.behaviour_checkbox:checked').each(function(){
+            behaviour_data += $(this).val() + ", "
+        });
+        behaviour_data = behaviour_data.substring(0, behaviour_data.length - 2);
+        $('#behaviour_data_text_box').val(behaviour_data);
+    });
+
+    // FilePond setup
+    FilePond.registerPlugin(FilePondPluginImagePreview, FilePondPluginFileValidateType);
+    const inputElement = document.querySelector('input[type="file"]');
+    const pond = FilePond.create(inputElement, {
+        labelIdle: `Drag & Drop your images or <span class="filepond--label-action">Browse</span>`,
+        onaddfile: (err, fileItem) => {
+            files.push(fileItem.file);
+        },
+        onremovefile: (err, fileItem) => {
+            const index = files.indexOf(fileItem.file);
+            if (index > -1) files.splice(index, 1);
+        }
+    });
+
+    // Recreate FilePond after form submission
+    function resetFilePond() {
+        files = [];
+        FilePond.destroy(inputElement); // Destroy the instance
+        pond = FilePond.create(inputElement); // Recreate FilePond instance
+    }
+
+    // Handle form submission
+    $('#form').submit(function(e){
+        e.preventDefault();
+        var formData = new FormData();
+
+        formData.append('place_name', $('#place_name').val());
+        formData.append('description', $('#description').val());
+        formData.append('no_of_dogs', $('#no_of_dogs').val());
+        formData.append('behaviour', $('#behaviour_data_text_box').val());
+        formData.append('km', $('#km').val());
+        formData.append('pet_name', $('#pet_name').val());
+        formData.append('pet_breed', $('#pet_breed').val());
+        formData.append('pet_age', $('#pet_age').val());
+        formData.append('pet_gender', $('#pet_gender').val());
+        formData.append('pet_size', $('#pet_size').val());
+        formData.append('pet_color', $('#pet_color').val());
+        formData.append('health_status', $('#health_status').val());
+        formData.append('vaccinated', $('#vaccinated').val());
+        formData.append('spayed_neutered', $('#spayed_neutered').val());
+
+        // File input element data
+        formData.append('length', files.length);
+        for (var i = 0; i < files.length; i++) {
+            formData.append('images' + i, files[i]);
+        }
+
+        // CSRF token
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        $.ajax({
+            type: 'POST',
+            url: '{% url "user.add_dogspot" lat lng %}',
+            data: formData,
+            cache: false,
+            processData: false,
+            contentType: false,
+            beforeSend: function() {
+                $("#add_Btn").addClass("btn-progress disabled");
+            },
+            success: function(data) {
+                if (data.point_exist) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Map Location already added by another user.',
+                        footer: '<a href="{% url "user.static_dogspot_marker_map" %}">Add New Point</a>'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Dogspot Added',
+                        text: 'Thank you for your contribution.',
+                        footer: '<a href="{% url "user.static_dogspot_marker_map" %}">Add New Point</a>'
+                    });
+                    resetFilePond();  // Reset FilePond
+                    $('#form')[0].reset();  // Reset the form
+                }
+                $("#add_Btn").removeClass("btn-progress disabled");
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.status + ': ' + xhr.responseText);
+            }
+        });
+    });
+</script>
+
+{% endblock %}

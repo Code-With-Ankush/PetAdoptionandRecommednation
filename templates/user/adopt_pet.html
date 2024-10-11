@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Adopt {{ pet.pet_name }}
+{% endblock %}
+
+{% block sidebar %}
+{% include 'user/sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+<section class="section py-5">
+    <div class="container">
+        <!-- Page Heading -->
+        <h2 class="mb-4 text-center">Adopt <strong>{{ pet.pet_name }}</strong></h2>
+
+        <div class="row justify-content-center">
+            <!-- Pet Details Card -->
+            <div class="col-md-6 col-lg-5">
+                <div class="card border-light shadow-sm mb-4 rounded-4">
+                    <div class="card-body text-center">
+                        <div class="pet-image mb-3">
+                            <img src="{{ pet.image.url }}" alt="{{ pet.pet_name }}" class="img-fluid rounded-circle shadow-sm" style="width: 200px; height: 200px; object-fit: cover;">
+                        </div>
+                        <h4 class="font-weight-bold">{{ pet.pet_name }}</h4>
+                        <ul class="list-unstyled text-muted mb-2">
+                            <li><strong>Breed:</strong> {{ pet.pet_breed }}</li>
+                            <li><strong>Age:</strong> {{ pet.pet_age }} years old</li>
+                            <li><strong>Gender:</strong> {{ pet.pet_gender }}</li>
+                            <li><strong>Size:</strong> {{ pet.pet_size }}</li>
+                            <li><strong>Health Status:</strong> {{ pet.health_status }}</li>
+                            <li><strong>Location:</strong> {{ pet.location_city }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adoption Confirmation Card -->
+            <div class="col-md-6 col-lg-5">
+                <div class="card border-light shadow-sm mb-4 rounded-4">
+                    <div class="card-body">
+                        <h5 class="mb-3">Confirm Adoption</h5>
+                        <p class="mb-4">You're about to provide a loving home for <strong>{{ pet.pet_name }}</strong>. Are you sure you want to adopt {{ pet.pet_name }}?</p>
+
+                        <form method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-lg w-100 mb-3">Yes, Adopt {{ pet.pet_name }}</button>
+                            <a href="{% url 'home.pet_listing' %}" class="btn btn-outline-secondary btn-lg w-100">Cancel</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

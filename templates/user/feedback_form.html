@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Give Feedback on {{ pet.pet_name }}
+{% endblock %}
+
+{% block sidebar %}
+{% include 'user/sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="section py-5">
+    <div class="container">
+        <h2 class="mb-4 text-center">Feedback for {{ pet.pet_name }}</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="id_rating" class="form-label fw-bold">Rating</label>
+                                {{ form.rating|add_class:"form-select" }}
+                                <small class="form-text text-muted">Rate your adoption experience from 1 to 5.</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_comments" class="form-label fw-bold">Comments</label>
+                                {{ form.comments|add_class:"form-control" }}
+                                <small class="form-text text-muted">Share your experience with this pet.</small>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'home.my_adoptions' %}" class="btn btn-outline-secondary">Cancel</a>
+                                <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

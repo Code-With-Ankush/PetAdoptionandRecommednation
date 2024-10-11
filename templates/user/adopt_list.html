@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}
+My Adoptions
+{% endblock %}
+
+{% block sidebar %}
+{% include 'user/sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+<section class="section py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="section-title fw-bold">My Adoptions</h2>
+            <!-- Button to Adopt New Pets (optional) -->
+            <a href="{% url 'home.pet_listing' %}" class="btn btn-primary">Adopt More Pets</a>
+        </div>
+
+        {% if adoptions %}
+        <div class="row">
+            {% for adoption in adoptions %}
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                <div class="card pet-card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                    <div class="card-body p-4 text-center d-flex flex-column justify-content-between">
+                        <div class="pet-image mb-3">
+                            <img src="{{ adoption.pet.image.url }}" alt="{{ adoption.pet.pet_name }}" class="img-fluid rounded-circle shadow-sm" style="width: 150px; height: 150px; object-fit: cover;">
+                        </div>
+                        <h5 class="pet-name mb-2 fw-bold">{{ adoption.pet.pet_name }}</h5>
+                        <p class="pet-breed text-muted mb-1">{{ adoption.pet.pet_breed }}</p>
+                        <p class="pet-age text-muted mb-2">{{ adoption.pet.pet_age }} years old</p>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <p class="pet-gender small text-muted">Gender</p>
+                                <strong>{{ adoption.pet.pet_gender }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <p class="pet-size small text-muted">Size</p>
+                                <strong>{{ adoption.pet.pet_size }}</strong>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <p class="pet-color small text-muted">Color</p>
+                                <strong>{{ adoption.pet.pet_color }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <p class="pet-health small text-muted">Health Status</p>
+                                <strong>{{ adoption.pet.health_status }}</strong>
+                            </div>
+                        </div>
+                        <div class="adoption-date text-muted small mt-2">
+                            <i class="bi bi-calendar-check"></i> Adopted on: <strong>{{ adoption.adoption_date|date:"M d, Y" }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <p class="text-muted mt-4">You haven't adopted any pets yet. <br> Browse our <a href="{% url 'home.pet_listing' %}">available pets</a> to find your new companion!</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
